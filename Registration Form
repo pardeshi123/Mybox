@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="Author" content="siddharth pardeshi">
+    <meta keywords="Student Registration Form">
+    <meta name="discreption" content="Designing student registration form and performing curde operations using HTML, CSS and Javascript">
+    <title>Crud Operation</title>
+    <link type="text/css" rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <h1 style="text-align: center; font-size:250%; color: rgb(245, 17, 17);text-shadow: 1px 1px 3px rgb(3, 3, 3);">Student Registration Form</h1>
+    <table>
+        <tr>
+            <td>
+                <form autocomplete="off" onsubmit="onFormSubmit()">
+                    <div>
+                        <label for="name">Student Name:</label>
+                        <input type="text" style="border-radius: 10px 0 10px 0; box-shadow: 3px 3px 3px rgb(3, 3, 3) ;" name="studentname" id="StudentName" placeholder="Name" required >
+                    </div>
+                    <div>
+                        <label for="Id">Student ID:</label>
+                        <input type="number" style="border-radius: 10px 0 10px 0; box-shadow: 3px 3px 3px rgb(3, 3, 3) ;" name="id" id="ID" placeholder="Enter ID" required>
+                    </div>
+                    <div>
+                        <label for="email">Email Id:</label>
+                        <input type="email" name="emailID" style="border-radius: 10px 0 10px 0; box-shadow: 3px 3px 3px rgb(3, 3, 3) ;" id="emailID" placeholder="Ener Email ID" required>
+                    </div>
+                    <div>
+                        <label for="ContactNo">Contact No:</label>
+                        <input type="number" name="contact No." style="border-radius: 10px 0 10px 0; box-shadow: 3px 3px 3px rgb(3, 3, 3) ;" id="contactno" placeholder="Enter Contact No." required>
+                    </div>
+
+                    <div class="form_action--button">
+                        <input type="submit" value="Submit" style=" box-shadow: 3px 3px 3px rgb(3, 3, 3) ;">
+                        <input type="reset" value="Reset" style=" box-shadow: 3px 3px 3px rgb(3, 3, 3) ;">
+                    </div>
+                </form>
+
+                <td >
+                    <table class="list" id="storeList">
+                        <thead>
+                            <tr>
+                                <th >Name</th>
+                                <th>Student ID</th>
+                                <th>Email ID</th>
+                                <th>Contact No.</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                        </tbody>
+                    </table>
+                </td>
+            </td>
+        </tr>
+    </table>
+    <script> var selectedRow = null
+
+        function onFormSubmit(e) {
+            event.preventDefault();
+                var formData = readFormData();
+                if (selectedRow == null){
+                    insertNewRecord(formData);
+                }
+                else{
+                    updateRecord(formData);
+                }
+                resetForm();    
+        }
+        
+        //Retrieve the data
+        function readFormData() {
+            var formData = {};
+            formData["StudentName"] = document.getElementById("StudentName").value;
+            formData["ID"] = document.getElementById("ID").value;
+            formData["emailID"] = document.getElementById("emailID").value;
+            formData["contactno"] = document.getElementById("contactno").value;
+            return formData;
+        }
+        
+        //Insert the data
+        function insertNewRecord(data) {
+            var table = document.getElementById("storeList").getElementsByTagName('tbody')[0];
+            var newRow = table.insertRow(table.length);
+            cell1 = newRow.insertCell(0);
+                cell1.innerHTML = data.StudentName;
+            cell2 = newRow.insertCell(1);
+                cell2.innerHTML = data.ID;
+            cell3 = newRow.insertCell(2);
+                cell3.innerHTML = data.emailID;
+            cell4 = newRow.insertCell(3);
+                cell4.innerHTML = data.contactno;
+            cell4 = newRow.insertCell(4);
+                cell4.innerHTML = `<button onClick="onEdit(this)" style=" box-shadow: 3px 3px 3px rgb(3, 3, 3) ;">Edit</button> <button onClick="onDelete(this)" style=" box-shadow: 3px 3px 3px rgb(3, 3, 3);">Delete</button>`;
+        }
+        
+        //Edit the data
+        function onEdit(td) {
+            selectedRow = td.parentElement.parentElement;
+            document.getElementById("StudentName").value = selectedRow.cells[0].innerHTML;
+            document.getElementById("ID").value = selectedRow.cells[1].innerHTML;
+            document.getElementById("emailID").value = selectedRow.cells[2].innerHTML;
+            document.getElementById("contactno.").value = selectedRow.cells[3].innerHTML;
+        }
+        function updateRecord(formData) {
+            selectedRow.cells[0].innerHTML = formData.StudentName;
+            selectedRow.cells[1].innerHTML = formData.ID;
+            selectedRow.cells[2].innerHTML = formData.emailID;
+            selectedRow.cells[3].innerHTML = formData.contactno;
+        }
+        
+        //Delete the data
+        function onDelete(td) {
+            if (confirm('Do you want to delete this record?')) {
+                row = td.parentElement.parentElement;
+                document.getElementById('storeList').deleteRow(row.rowIndex);
+                resetForm();
+            }
+        }
+        
+        //Reset the data
+        function resetForm() {
+            document.getElementById("StudentName").value = '';
+            document.getElementById("ID").value = '';
+            document.getElementById("emailID").value = '';
+            document.getElementById("contactno").value = '';
+            selectedRow = null;
+        }</script>
+</body>
+</html>
