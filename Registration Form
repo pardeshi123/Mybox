@@ -3,9 +3,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="Author" content="siddharth pardeshi">
-    <meta keywords="Student Registration Form">
+    <meta keywords="Crud Operation,create, edit and delete item">
     <meta name="discreption" content="Designing student registration form and performing curde operations using HTML, CSS and Javascript">
-    <title>Crud Operation</title>
+    <title>Student Registration Form</title>
     <link type="text/css" rel="stylesheet" href="style.css">
 </head>
 
@@ -102,7 +102,7 @@
             document.getElementById("StudentName").value = selectedRow.cells[0].innerHTML;
             document.getElementById("ID").value = selectedRow.cells[1].innerHTML;
             document.getElementById("emailID").value = selectedRow.cells[2].innerHTML;
-            document.getElementById("contactno.").value = selectedRow.cells[3].innerHTML;
+            document.getElementById("contactno").value = selectedRow.cells[3].innerHTML;
         }
         function updateRecord(formData) {
             selectedRow.cells[0].innerHTML = formData.StudentName;
