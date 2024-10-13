@@ -80,6 +80,49 @@ function getForecast(lat, lon) {
     .then(data => displayForecast(data.list))
     .catch(error => console.log(error));
 }
+
+// Display current weather
+function displayCurrentWeather(data) {
+    const today = new Date();
+    cityName.innerText = `${data.name} (${today.toISOString().split('T')[0]})`;
+    temperature.innerText = `${data.main.temp}°C`;
+    wind.innerText = `Wind: ${data.wind.speed} m/s`;
+    humidity.innerText = `Humidity: ${data.main.humidity}%`;
+    weatherIcon.src = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`;
+}
+
+// Display current weather
+function displayCurrentWeather(data) {
+    const today = new Date();
+    cityName.innerText = `${data.name} (${today.toISOString().split('T')[0]})`;
+    temperature.innerText = `${data.main.temp}°C`;
+    wind.innerText = `Wind: ${data.wind.speed} m/s`;
+    humidity.innerText = `Humidity: ${data.main.humidity}%`;
+    weatherIcon.src = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`;
+}
+// Display 5-day forecast
+function displayForecast(data) {
+    forecastContainer.innerHTML = ''; // Clear old forecast
+    const forecastData = data.filter((item, index) => index % 8 === 0); // Filter 5 days (every 24 hours)
+    
+    forecastData.forEach(day => {
+        const dayElement = document.createElement('div');
+        dayElement.className = 'bg-gray-300 p-4 rounded-lg text-center';
+        const date = new Date(day.dt_txt).toISOString().split('T')[0];
+        const temp = day.main.temp;
+        const wind = day.wind.speed;
+        const humidity = day.main.humidity;
+        const icon = `http://openweathermap.org/img/w/${day.weather[0].icon}.png`;
+        dayElement.innerHTML = `
+            <p class="font-semibold">${date}</p>
+            <img src="${icon}" alt="Weather Icon" class="mx-auto my-2 w-12 h-12">
+            <p>Temp: ${temp}°C</p>
+            <p>Wind: ${wind} m/s</p>
+            <p>Humidity: ${humidity}%</p>
+        `;
+        forecastContainer.appendChild(dayElement);
+    });
+}
 </script>
     
 </body>
