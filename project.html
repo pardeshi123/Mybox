@@ -60,6 +60,26 @@ const wind = document.getElementById('wind');
 const humidity = document.getElementById('humidity');
 const weatherIcon = document.getElementById('weatherIcon').querySelector('img');
 const forecastContainer = document.getElementById('forecast');
+
+
+// Fetch current weather by city name
+function getWeatherByCity(city) {
+    fetch(`${apiBaseUrl}weather?q=${city}&appid=${apiKey}&units=metric`)
+    .then(response => response.json())
+    .then(data => {
+        displayCurrentWeather(data);
+        getForecast(data.coord.lat, data.coord.lon);
+    })
+    .catch(error => alert('City not found!'));
+}
+
+// Fetch 5-day forecast
+function getForecast(lat, lon) {
+    fetch(`${apiBaseUrl}forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`)
+    .then(response => response.json())
+    .then(data => displayForecast(data.list))
+    .catch(error => console.log(error));
+}
 </script>
     
 </body>
