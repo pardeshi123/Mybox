@@ -124,7 +124,7 @@ searchBtn.addEventListener('click', () => {
 });
 
 locationBtn.addEventListener('click', () => {
-    if (navigator.geolocation) {
+    if (navigator.geolocation) {  //navigator.geolocation object provides methods to obtain the current location of the device.
         navigator.geolocation.getCurrentPosition((position) => {
             const lat = position.coords.latitude;
             const lon = position.coords.longitude;
