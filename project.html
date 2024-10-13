@@ -45,6 +45,7 @@
             </div>
         </div>
     </div>
+    <footer></footer>
 <script>
     const apiKey = '7929afea19589bb37f5f07ad8e573f91';
 const apiBaseUrl = 'https://api.openweathermap.org/data/2.5/';
@@ -84,7 +85,7 @@ function getForecast(lat, lon) {
 // Display current weather
 function displayCurrentWeather(data) {
     const today = new Date();
-    cityName.innerText = `${data.name} (${today.toISOString().split('T')[0]})`;
+    cityName.innerText = `${data.name} (${today.toISOString().split('T')[0]})`; //This expression takes a Date object, converts it to ISO format, and extracts the date as a simple YYYY-MM-DD string without the time component.
     temperature.innerText = `${data.main.temp}°C`;
     wind.innerText = `Wind: ${data.wind.speed} m/s`;
     humidity.innerText = `Humidity: ${data.main.humidity}%`;
@@ -99,7 +100,7 @@ function displayForecast(data) {
     forecastData.forEach(day => {
         const dayElement = document.createElement('div');
         dayElement.className = 'bg-gray-300 p-4 rounded-lg text-center';
-        const date = new Date(day.dt_txt).toISOString().split('T')[0];
+        const date = new Date(day.dt_txt).toISOString().split('T')[0]; 
         const temp = day.main.temp;
         const wind = day.wind.speed;
         const humidity = day.main.humidity;
@@ -121,6 +122,22 @@ searchBtn.addEventListener('click', () => {
         getWeatherByCity(city);
     }
 });
+
+locationBtn.addEventListener('click', () => {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+            const lat = position.coords.latitude;
+            const lon = position.coords.longitude;
+            fetch(`${apiBaseUrl}weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`)
+            .then(response => response.json())
+            .then(data => {
+                displayCurrentWeather(data);
+                getForecast(lat, lon);
+            });
+        });
+    }
+});
+
 </script>
     
 </body>
