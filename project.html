@@ -10,14 +10,14 @@
     <title>Weather Forecast WebApp</title>
 </head>
 
-<body class="bg-blue-100 flex justify-center items-center h-screen">
+<body class="bg-blue-100 flex flex-col justify-between items-center h-screen">
     <div class="w-full max-w-4xl p-6 bg-white shadow-lg rounded-lg">
         <h1 class="text-3xl font-bold mb-4 text-center">Weather Dashboard</h1>
 
         <div class="mb-4">
             <label for="cityInput" class="block text-sm font-medium text-gray-700">Enter a City Name</label>
             <div class="flex items-center mt-2">
-                <input id="cityInput" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="E.g.,Mumbai, Nasik, pune">
+                <input id="cityInput" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="E.g., Mumbai, Nasik, Pune">
                 <button id="searchBtn" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg">Search</button>
             </div>
             <button id="locationBtn" class="mt-2 w-full px-4 py-2 bg-gray-500 text-white rounded-lg">Use Current Location</button>
@@ -45,100 +45,114 @@
             </div>
         </div>
     </div>
-    <footer></footer>
+
+    <!-- Footer Section -->
+    <footer class="w-full bg-gray-800 text-white py-4 mt-8 text-center">
+        <p>© 2024 Weather Dashboard by Siddharth Pardeshi</p>
+        <p>All rights reserved.</p>
+
+        <!-- Call and Mail Icons -->
+        <div class="mt-2 flex justify-center">
+            <a href="tel:+919637352541" class="mx-4">
+                <img src="https://img.icons8.com/ios-glyphs/30/ffffff/phone.png" alt="Call Icon" class="inline">
+            </a>
+            <a href="https://mail.google.com/mail/u/0/#inbox?compose=DmwnWstwNZxcvcgMGTrXfsQfKSgJLxpQJdpZpDXpWzzdHRDpwTfbQTTGVbVkPFRrQWfQqDsKJXkv" class="mx-4">
+                <img src="https://img.icons8.com/ios-glyphs/30/ffffff/email.png" alt="Mail Icon" class="inline">
+            </a>
+        </div>
+    </footer>
+
 <script>
     const apiKey = '7929afea19589bb37f5f07ad8e573f91';
-const apiBaseUrl = 'https://api.openweathermap.org/data/2.5/';
+    const apiBaseUrl = 'https://api.openweathermap.org/data/2.5/';
 
-const searchBtn = document.getElementById('searchBtn');
-const locationBtn = document.getElementById('locationBtn');
-const cityInput = document.getElementById('cityInput');
+    const searchBtn = document.getElementById('searchBtn');
+    const locationBtn = document.getElementById('locationBtn');
+    const cityInput = document.getElementById('cityInput');
 
-const cityName = document.getElementById('cityName');
-const date = document.getElementById('date');
-const temperature = document.getElementById('temperature');
-const wind = document.getElementById('wind');
-const humidity = document.getElementById('humidity');
-const weatherIcon = document.getElementById('weatherIcon').querySelector('img');
-const forecastContainer = document.getElementById('forecast');
+    const cityName = document.getElementById('cityName');
+    const date = document.getElementById('date');
+    const temperature = document.getElementById('temperature');
+    const wind = document.getElementById('wind');
+    const humidity = document.getElementById('humidity');
+    const weatherIcon = document.getElementById('weatherIcon').querySelector('img');
+    const forecastContainer = document.getElementById('forecast');
 
-
-// Fetch current weather by city name
-function getWeatherByCity(city) {
-    fetch(`${apiBaseUrl}weather?q=${city}&appid=${apiKey}&units=metric`)
-    .then(response => response.json())
-    .then(data => {
-        displayCurrentWeather(data);
-        getForecast(data.coord.lat, data.coord.lon);
-    })
-    .catch(error => alert('City not found!'));
-}
-
-// Fetch 5-day forecast
-function getForecast(lat, lon) {
-    fetch(`${apiBaseUrl}forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`)
-    .then(response => response.json())
-    .then(data => displayForecast(data.list))
-    .catch(error => console.log(error));
-}
-
-// Display current weather
-function displayCurrentWeather(data) {
-    const today = new Date();
-    cityName.innerText = `${data.name} (${today.toISOString().split('T')[0]})`; //This expression takes a Date object, converts it to ISO format, and extracts the date as a simple YYYY-MM-DD string without the time component.
-    temperature.innerText = `${data.main.temp}°C`;
-    wind.innerText = `Wind: ${data.wind.speed} m/s`;
-    humidity.innerText = `Humidity: ${data.main.humidity}%`;
-    weatherIcon.src = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`;
-}
-
-// Display 5-day forecast
-function displayForecast(data) {
-    forecastContainer.innerHTML = ''; // Clear old forecast
-    const forecastData = data.filter((item, index) => index % 8 === 0); // Filter 5 days (every 24 hours)
-    
-    forecastData.forEach(day => {
-        const dayElement = document.createElement('div');
-        dayElement.className = 'bg-gray-300 p-4 rounded-lg text-center';
-        const date = new Date(day.dt_txt).toISOString().split('T')[0]; 
-        const temp = day.main.temp;
-        const wind = day.wind.speed;
-        const humidity = day.main.humidity;
-        const icon = `http://openweathermap.org/img/w/${day.weather[0].icon}.png`;
-        dayElement.innerHTML = `
-            <p class="font-semibold">${date}</p>
-            <img src="${icon}" alt="Weather Icon" class="mx-auto my-2 w-12 h-12">
-            <p>Temp: ${temp}°C</p>
-            <p>Wind: ${wind} m/s</p>
-            <p>Humidity: ${humidity}%</p>
-        `;
-        forecastContainer.appendChild(dayElement);
-    });
-}
-// Event listeners
-searchBtn.addEventListener('click', () => {
-    const city = cityInput.value;
-    if (city) {
-        getWeatherByCity(city);
+    // Fetch current weather by city name
+    function getWeatherByCity(city) {
+        fetch(`${apiBaseUrl}weather?q=${city}&appid=${apiKey}&units=metric`)
+        .then(response => response.json())
+        .then(data => {
+            displayCurrentWeather(data);
+            getForecast(data.coord.lat, data.coord.lon);
+        })
+        .catch(error => alert('City not found!'));
     }
-});
 
-locationBtn.addEventListener('click', () => {
-    if (navigator.geolocation) {  //navigator.geolocation object provides methods to obtain the current location of the device.
-        navigator.geolocation.getCurrentPosition((position) => {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            fetch(`${apiBaseUrl}weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`)
-            .then(response => response.json())
-            .then(data => {
-                displayCurrentWeather(data);
-                getForecast(lat, lon);
-            });
+    // Fetch 5-day forecast
+    function getForecast(lat, lon) {
+        fetch(`${apiBaseUrl}forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`)
+        .then(response => response.json())
+        .then(data => displayForecast(data.list))
+        .catch(error => console.log(error));
+    }
+
+    // Display current weather
+    function displayCurrentWeather(data) {
+        const today = new Date();
+        cityName.innerText = `${data.name} (${today.toISOString().split('T')[0]})`;
+        temperature.innerText = `${data.main.temp}°C`;
+        wind.innerText = `Wind: ${data.wind.speed} m/s`;
+        humidity.innerText = `Humidity: ${data.main.humidity}%`;
+        weatherIcon.src = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`;
+    }
+
+    // Display 5-day forecast
+    function displayForecast(data) {
+        forecastContainer.innerHTML = ''; // Clear old forecast
+        const forecastData = data.filter((item, index) => index % 8 === 0); // Filter 5 days (every 24 hours)
+        
+        forecastData.forEach(day => {
+            const dayElement = document.createElement('div');
+            dayElement.className = 'bg-gray-300 p-4 rounded-lg text-center';
+            const date = new Date(day.dt_txt).toISOString().split('T')[0]; 
+            const temp = day.main.temp;
+            const wind = day.wind.speed;
+            const humidity = day.main.humidity;
+            const icon = `http://openweathermap.org/img/w/${day.weather[0].icon}.png`;
+            dayElement.innerHTML = `
+                <p class="font-semibold">${date}</p>
+                <img src="${icon}" alt="Weather Icon" class="mx-auto my-2 w-12 h-12">
+                <p>Temp: ${temp}°C</p>
+                <p>Wind: ${wind} m/s</p>
+                <p>Humidity: ${humidity}%</p>
+            `;
+            forecastContainer.appendChild(dayElement);
         });
     }
-});
 
+    // Event listeners
+    searchBtn.addEventListener('click', () => {
+        const city = cityInput.value;
+        if (city) {
+            getWeatherByCity(city);
+        }
+    });
+
+    locationBtn.addEventListener('click', () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                fetch(`${apiBaseUrl}weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`)
+                .then(response => response.json())
+                .then(data => {
+                    displayCurrentWeather(data);
+                    getForecast(lat, lon);
+                });
+            });
+        }
+    });
 </script>
-    
 </body>
 </html>
