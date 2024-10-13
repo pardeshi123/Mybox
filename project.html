@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="Author" content="siddharth pardeshi">
+    <meta name="Author" content="Siddharth Pardeshi">
     <meta name="keywords" content="weather dashboard, temperature, wind, humidity, city">
     <meta name="description" content="Designing Weather forecast web application on the basis of city name">
     <script src="https://cdn.tailwindcss.com"></script>
     <title>Weather Forecast WebApp</title>
+    <style>
+        /* Additional styles for title shadow effect */
+        h1 {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+    </style>
 </head>
 
 <body class="bg-blue-100 flex flex-col justify-between items-center h-screen">
@@ -16,9 +23,15 @@
 
         <div class="mb-4">
             <label for="cityInput" class="block text-sm font-medium text-gray-700">Enter a City Name</label>
-            <div class="flex items-center mt-2">
+            <div class="flex items-center mt-2 relative">
                 <input id="cityInput" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="E.g., Mumbai, Nasik, Pune">
                 <button id="searchBtn" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg">Search</button>
+                <!-- Dropdown for recently searched cities -->
+                <div id="dropdown" class="absolute z-10 w-full bg-white border border-gray-300 rounded-lg hidden">
+                    <ul id="recentCities" class="max-h-48 overflow-y-auto">
+                        <!-- Recent cities will be injected here -->
+                    </ul>
+                </div>
             </div>
             <button id="locationBtn" class="mt-2 w-full px-4 py-2 bg-gray-500 text-white rounded-lg">Use Current Location</button>
         </div>
@@ -62,97 +75,157 @@
         </div>
     </footer>
 
-<script>
-    const apiKey = '7929afea19589bb37f5f07ad8e573f91';
-    const apiBaseUrl = 'https://api.openweathermap.org/data/2.5/';
+    <script>
+        const apiKey = '7929afea19589bb37f5f07ad8e573f91'; // API key for OpenWeatherMap
+        const apiBaseUrl = 'https://api.openweathermap.org/data/2.5/'; // Base URL for API calls
 
-    const searchBtn = document.getElementById('searchBtn');
-    const locationBtn = document.getElementById('locationBtn');
-    const cityInput = document.getElementById('cityInput');
+        // Elements from the DOM
+        const searchBtn = document.getElementById('searchBtn');
+        const locationBtn = document.getElementById('locationBtn');
+        const cityInput = document.getElementById('cityInput');
+        const dropdown = document.getElementById('dropdown');
+        const recentCitiesList = document.getElementById('recentCities');
 
-    const cityName = document.getElementById('cityName');
-    const date = document.getElementById('date');
-    const temperature = document.getElementById('temperature');
-    const wind = document.getElementById('wind');
-    const humidity = document.getElementById('humidity');
-    const weatherIcon = document.getElementById('weatherIcon').querySelector('img');
-    const forecastContainer = document.getElementById('forecast');
+        const cityName = document.getElementById('cityName');
+        const date = document.getElementById('date');
+        const temperature = document.getElementById('temperature');
+        const wind = document.getElementById('wind');
+        const humidity = document.getElementById('humidity');
+        const weatherIcon = document.getElementById('weatherIcon').querySelector('img');
+        const forecastContainer = document.getElementById('forecast');
 
-    // Fetch current weather by city name
-    function getWeatherByCity(city) {
-        fetch(`${apiBaseUrl}weather?q=${city}&appid=${apiKey}&units=metric`)
-        .then(response => response.json())
-        .then(data => {
-            displayCurrentWeather(data);
-            getForecast(data.coord.lat, data.coord.lon);
-        })
-        .catch(error => alert('City not found!'));
-    }
-
-    // Fetch 5-day forecast
-    function getForecast(lat, lon) {
-        fetch(`${apiBaseUrl}forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`)
-        .then(response => response.json())
-        .then(data => displayForecast(data.list))
-        .catch(error => console.log(error));
-    }
-
-    // Display current weather
-    function displayCurrentWeather(data) {
-        const today = new Date();
-        cityName.innerText = `${data.name} (${today.toISOString().split('T')[0]})`;
-        temperature.innerText = `${data.main.temp}°C`;
-        wind.innerText = `Wind: ${data.wind.speed} m/s`;
-        humidity.innerText = `Humidity: ${data.main.humidity}%`;
-        weatherIcon.src = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`;
-    }
-
-    // Display 5-day forecast
-    function displayForecast(data) {
-        forecastContainer.innerHTML = ''; // Clear old forecast
-        const forecastData = data.filter((item, index) => index % 8 === 0); // Filter 5 days (every 24 hours)
-        
-        forecastData.forEach(day => {
-            const dayElement = document.createElement('div');
-            dayElement.className = 'bg-gray-300 p-4 rounded-lg text-center';
-            const date = new Date(day.dt_txt).toISOString().split('T')[0]; 
-            const temp = day.main.temp;
-            const wind = day.wind.speed;
-            const humidity = day.main.humidity;
-            const icon = `http://openweathermap.org/img/w/${day.weather[0].icon}.png`;
-            dayElement.innerHTML = `
-                <p class="font-semibold">${date}</p>
-                <img src="${icon}" alt="Weather Icon" class="mx-auto my-2 w-12 h-12">
-                <p>Temp: ${temp}°C</p>
-                <p>Wind: ${wind} m/s</p>
-                <p>Humidity: ${humidity}%</p>
-            `;
-            forecastContainer.appendChild(dayElement);
-        });
-    }
-
-    // Event listeners
-    searchBtn.addEventListener('click', () => {
-        const city = cityInput.value;
-        if (city) {
-            getWeatherByCity(city);
-        }
-    });
-
-    locationBtn.addEventListener('click', () => {
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition((position) => {
-                const lat = position.coords.latitude;
-                const lon = position.coords.longitude;
-                fetch(`${apiBaseUrl}weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`)
-                .then(response => response.json())
+        // Fetch current weather by city name
+        function getWeatherByCity(city) {
+            fetch(`${apiBaseUrl}weather?q=${city}&appid=${apiKey}&units=metric`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('City not found!');
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     displayCurrentWeather(data);
-                    getForecast(lat, lon);
-                });
+                    getForecast(data.coord.lat, data.coord.lon); // Fetch forecast for the current location
+                    saveRecentCity(city); // Save city to recent searches
+                })
+                .catch(error => alert(error.message)); // Handle errors
+        }
+
+        // Save recent city to local storage
+        function saveRecentCity(city) {
+            let recentCities = JSON.parse(localStorage.getItem('recentCities')) || [];
+            if (!recentCities.includes(city)) {
+                recentCities.push(city);
+                localStorage.setItem('recentCities', JSON.stringify(recentCities));
+                populateDropdown(); // Update dropdown with recent cities
+            }
+        }
+
+        // Populate dropdown with recent cities from local storage
+        function populateDropdown() {
+            recentCitiesList.innerHTML = ''; // Clear previous dropdown items
+            const recentCities = JSON.parse(localStorage.getItem('recentCities')) || [];
+            recentCities.forEach(city => {
+                const li = document.createElement('li'); // Create list item for each city
+                li.className = 'cursor-pointer hover:bg-gray-200 px-4 py-2';
+                li.innerText = city;
+                li.onclick = () => {
+                    cityInput.value = city; // Update input field
+                    dropdown.classList.add('hidden'); // Hide dropdown
+                    getWeatherByCity(city); // Fetch weather data
+                };
+                recentCitiesList.appendChild(li); // Append city to dropdown
+            });
+            dropdown.classList.toggle('hidden', recentCities.length === 0); // Show/hide dropdown
+        }
+
+        // Fetch 5-day forecast
+        function getForecast(lat, lon) {
+            fetch(`${apiBaseUrl}forecast?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`)
+                .then(response => response.json())
+                .then(data => displayForecast(data.list)) // Display forecast data
+                .catch(error => console.log(error)); // Handle errors
+        }
+
+        // Display current weather
+        function displayCurrentWeather(data) {
+            const today = new Date();
+            cityName.innerText = `${data.name} (${today.toISOString().split('T')[0]})`;
+            temperature.innerText = `${data.main.temp}°C`;
+            wind.innerText = `Wind: ${data.wind.speed} m/s`;
+            humidity.innerText = `Humidity: ${data.main.humidity}%`;
+            weatherIcon.src = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`; // Set weather icon
+        }
+
+        // Display 5-day forecast
+        function displayForecast(data) {
+            forecastContainer.innerHTML = ''; // Clear old forecast
+            const forecastData = data.filter((item, index) => index % 8 === 0); // Filter 5 days (every 24 hours)
+
+            forecastData.forEach(day => {
+                const dayElement = document.createElement('div'); // Create a card for each day's forecast
+                dayElement.className = 'bg-gray-300 p-4 rounded-lg text-center';
+                const date = new Date(day.dt_txt).toISOString().split('T')[0];
+                const temp = day.main.temp;
+                const wind = day.wind.speed;
+                const humidity = day.main.humidity;
+                const icon = `http://openweathermap.org/img/w/${day.weather[0].icon}.png`;
+                dayElement.innerHTML = `
+                    <p class="font-semibold">${date}</p>
+                    <img src="${icon}" alt="Weather Icon" class="mx-auto my-2 w-12 h-12">
+                    <p>Temp: ${temp}°C</p>
+                    <p>Wind: ${wind} m/s</p>
+                    <p>Humidity: ${humidity}%</p>
+                `;
+                forecastContainer.appendChild(dayElement); // Append day's forecast card to container
             });
         }
-    });
-</script>
+
+        // Event listeners
+        searchBtn.addEventListener('click', () => {
+            const city = cityInput.value.trim(); // Get trimmed city input
+            if (city) {
+                getWeatherByCity(city); // Fetch weather for the city
+                dropdown.classList.add('hidden'); // Hide dropdown on search
+            } else {
+                alert('Please enter a city name.'); // Alert if input is empty
+            }
+        });
+
+        locationBtn.addEventListener('click', () => {
+            // Get current location
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(position => {
+                    const { latitude, longitude } = position.coords; // Destructure coordinates
+                    fetch(`${apiBaseUrl}weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=metric`)
+                        .then(response => response.json())
+                        .then(data => {
+                            displayCurrentWeather(data); // Display current weather
+                            getForecast(latitude, longitude); // Fetch forecast for the current location
+                        })
+                        .catch(error => alert(error.message)); // Handle errors
+                });
+            } else {
+                alert('Geolocation is not supported by this browser.'); // Alert if geolocation is not supported
+            }
+        });
+
+        // Event listener for dropdown
+        cityInput.addEventListener('focus', () => {
+            dropdown.classList.remove('hidden'); // Show dropdown when input is focused
+            populateDropdown(); // Populate dropdown with recent cities
+        });
+
+        // Close dropdown when clicking outside
+        window.addEventListener('click', (event) => {
+            if (event.target !== cityInput && event.target !== dropdown) {
+                dropdown.classList.add('hidden'); // Hide dropdown
+            }
+        });
+
+        // Initial population of the dropdown when the page loads
+        populateDropdown();
+    </script>
 </body>
+
 </html>
