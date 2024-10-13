@@ -91,15 +91,6 @@ function displayCurrentWeather(data) {
     weatherIcon.src = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`;
 }
 
-// Display current weather
-function displayCurrentWeather(data) {
-    const today = new Date();
-    cityName.innerText = `${data.name} (${today.toISOString().split('T')[0]})`;
-    temperature.innerText = `${data.main.temp}°C`;
-    wind.innerText = `Wind: ${data.wind.speed} m/s`;
-    humidity.innerText = `Humidity: ${data.main.humidity}%`;
-    weatherIcon.src = `http://openweathermap.org/img/w/${data.weather[0].icon}.png`;
-}
 // Display 5-day forecast
 function displayForecast(data) {
     forecastContainer.innerHTML = ''; // Clear old forecast
@@ -123,6 +114,13 @@ function displayForecast(data) {
         forecastContainer.appendChild(dayElement);
     });
 }
+// Event listeners
+searchBtn.addEventListener('click', () => {
+    const city = cityInput.value;
+    if (city) {
+        getWeatherByCity(city);
+    }
+});
 </script>
     
 </body>
