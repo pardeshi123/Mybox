@@ -6,45 +6,46 @@
     <meta name="Author" content="siddharth pardeshi">
     <meta name="keywords" content="weather dashboard, temperature, wind, humidity, city">
     <meta name="description" content="Designing Weather forecast web application on the basis of city name">
+    <script src="https://cdn.tailwindcss.com"></script>
     <title>Weather Forecast WebApp</title>
 </head>
-<body>
 
-    <div>
-        <h1>Weather Dashboard</h1>
+<body class="bg-blue-100 flex justify-center items-center h-screen">
+    <div class="w-full max-w-4xl p-6 bg-white shadow-lg rounded-lg">
+        <h1 class="text-3xl font-bold mb-4 text-center">Weather Dashboard</h1>
 
-        <div>
-            <label for="cityInput">Enter a City Name</label>
-            <div>
-                <input id="cityInput" type="text" placeholder="E.g., New York, London, Tokyo">
-                <button id="searchBtn">Search</button>
+        <div class="mb-4">
+            <label for="cityInput" class="block text-sm font-medium text-gray-700">Enter a City Name</label>
+            <div class="flex items-center mt-2">
+                <input id="cityInput" type="text" class="w-full px-4 py-2 border border-gray-300 rounded-lg" placeholder="E.g.,Mumbai, Nasik, pune">
+                <button id="searchBtn" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded-lg">Search</button>
             </div>
-            <button id="locationBtn">Use Current Location</button>
+            <button id="locationBtn" class="mt-2 w-full px-4 py-2 bg-gray-500 text-white rounded-lg">Use Current Location</button>
         </div>
 
-        <div id="currentWeather">
-            <h2 id="cityName">City</h2>
-            <p id="date">Date</p>
-            <div>
+        <div id="currentWeather" class="bg-blue-500 text-white p-4 rounded-lg">
+            <h2 id="cityName" class="text-2xl font-semibold">City</h2>
+            <p id="date" class="text-sm">Date</p>
+            <div class="flex items-center justify-between mt-4">
                 <div>
-                    <p id="temperature">--°C</p>
+                    <p id="temperature" class="text-4xl">--°C</p>
                     <p id="wind">Wind: -- m/s</p>
                     <p id="humidity">Humidity: --%</p>
                 </div>
                 <div id="weatherIcon">
-                    <img src="" alt="Weather Icon">
+                    <img src="" alt="Weather Icon" class="w-16 h-16">
                 </div>
             </div>
         </div>
 
-        <div>
-            <h3>5-Day Forecast</h3>
-            <div id="forecast">
+        <div class="mt-6">
+            <h3 class="text-xl font-semibold mb-2">5-Day Forecast</h3>
+            <div id="forecast" class="grid grid-cols-5 gap-4">
                 <!-- Forecast cards will be injected here -->
             </div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    
 </body>
 </html>
