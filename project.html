@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="Author" content="siddharth pardeshi">
+    <meta name="keywords" content="weather dashboard, temperature, wind, humidity, city">
+    <meta name="description" content="Designing Weather forecast web application on the basis of city name">
+    <title>Weather Forecast WebApp</title>
+</head>
+<body>
+
+    <div>
+        <h1>Weather Dashboard</h1>
+
+        <div>
+            <label for="cityInput">Enter a City Name</label>
+            <div>
+                <input id="cityInput" type="text" placeholder="E.g., New York, London, Tokyo">
+                <button id="searchBtn">Search</button>
+            </div>
+            <button id="locationBtn">Use Current Location</button>
+        </div>
+
+        <div id="currentWeather">
+            <h2 id="cityName">City</h2>
+            <p id="date">Date</p>
+            <div>
+                <div>
+                    <p id="temperature">--°C</p>
+                    <p id="wind">Wind: -- m/s</p>
+                    <p id="humidity">Humidity: --%</p>
+                </div>
+                <div id="weatherIcon">
+                    <img src="" alt="Weather Icon">
+                </div>
+            </div>
+        </div>
+
+        <div>
+            <h3>5-Day Forecast</h3>
+            <div id="forecast">
+                <!-- Forecast cards will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
