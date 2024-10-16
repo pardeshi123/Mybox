@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <style>* {
+    margin: 0;
+    padding: 0;
+  }
+  
+  
+  body{
+    background-color: #548687;
+    text-align: center;
+  }
+  
+  .container{
+    height: 70vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color: pink; */
+  }
+  
+  .game{
+    height: 60vmin;
+    /* background-color: red; */
+    width: 60vmin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1.5vmin
+  }
+  
+  .box{
+    height: 18vmin;
+    width: 18vmin;
+    border-radius: 1rem;
+    border: none;
+    box-shadow: 0 0 1rem rgba(0,0,0,0.3);
+    font-size: 8vmin;
+    color: #b0413e;
+    background-color: #ffffc7;
+  }
+  
+  
+  .reset-btn {
+    padding: 1rem;
+    border-radius: 1rem;
+    font-size: 1.25rem;
+    background-color: #191913;
+    color: #fff;
+    border: none;
+  }
+  
+  #new-Game{
+    padding: 1rem;
+    border-radius: 1rem;
+    font-size: 1.25rem;
+    background-color: #191913;
+    color: #fff;
+    border: none;
+  }
+  
+  #msg{
+    color: #ffffc7;
+    font-size:5vmin
+  }
+  
+  .msg-container{
+    height: 100vmin;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 4rem;
+  }
+  
+  
+  .hide{
+    display: none;
+  }
+  
+  
+  
+  
+  </style>
+</head>
+<body>
+  <h1>Tic Tac Toe</h1>
+  <div class="msg-container hide">
+    <p id="msg">Winner</p>
+    <button id="new-Game">New Game</button>
+  </div>
+  <div class="container">
+    <div class="game">
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+      <button class="box"></button>
+    </div>
+  </div>
+  <button class="reset-btn">Reset Game</button>
+
+  <script>
+    let boxes = document.querySelectorAll('.box') ;
+let resetBtn = document.querySelector('.reset-btn') ;
+let newGameBtn = document.querySelector('#new-Game') ;
+let msgContainer = document.querySelector('.msg-container') ;
+let msg = document.querySelector('#msg');
+
+
+boxes.forEach((box)=>{
+  box.addEventListener("click" , ()=> {
+    if(turnO){
+      box.innerText = "O" ;
+      turnO = false ;
+    }
+    else{
+      box.innerText = "X"
+      turnO = true ;
+      
+    }
+    box.disabled = true ; 
+    count++ ;
+
+    let isWinner = checkWinner() ;
+
+    if(count === 9 && !isWinner){
+      gameDraw() ;
+    }
+    
+  });
+});
+
+
+const resetGame = () => {
+  turnO = true ; 
+  count = 0 ; 
+  enableBoxes() ;
+  msgContainer.classList.add("hide") ;
+}
+
+
+const enableBoxes =() => {
+  for(let box of boxes) {
+    box.disabled = false ;
+    box.innerText = "" ;
+  }
+}
+
+
+resetBtn.addEventListener('click' , resetGame) ;
+newGameBtn.addEventListener('click' , resetGame) ; 
+
+
+let turnO = true ; 
+let count = 0 ;
+const winPattern = [
+[0, 1, 2] ,
+[0, 3, 6],
+[0, 4, 8],
+[1, 4, 7],
+[2, 5, 8],
+[2, 4, 6],
+[3, 4, 5],
+[6, 7, 8]
+]
+
+const showWinner = (winner) => {
+  msg.innerText = `Congratulation, winner is ${winner}` ;
+  msgContainer.classList.remove("hide")
+  disabledBoxes() ;
+}
+
+const checkWinner = () =>{
+  for(let pattern of winPattern){
+
+    // [0,1,2]
+    let position1 = pattern[0] ; //0 
+    console.log(position1);
+    let position1Text = boxes[position1].innerText ; // O 
+    console.log(position1Text) ;
+  
+    let position2 = pattern[1]; //1
+    console.log(position2);
+    let position2Text = boxes[position2].innerText ; // O 
+    console.log(position2Text)
+    
+    let position3 = pattern[2] ; //2
+    console.log(position3);
+    let position3Text = boxes[position3].innerText ; // O
+    console.log(position3Text)
+    
+    if(position1Text != "" && position2Text != "" && position3Text!=""){
+      if(position1Text === position2Text && position2Text === position3Text)
+       {
+        showWinner(position1Text)
+        return true ;
+       }
+    }
+  }
+}
+
+
+const gameDraw = () => {
+  msg.innerText = `Game is Draw` 
+  msgContainer.classList.remove("hide") ;
+  disabledBoxes() ;
+}
+
+const disabledBoxes =() => {
+  for(let box of boxes) {
+    box.disabled = true ;
+  }
+}
+
+
+  </script>
+</body>
+</html>
