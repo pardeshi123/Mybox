@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Search Page</title>
+  <style>
+    body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f9f9f9;
+}
+
+.container {
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 20px;
+  background-color: #ffffff;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+}
+
+.search-bar {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.search-bar input, .search-bar select {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.results-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.result-item {
+  padding: 15px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background-color: #fdfdfd;
+}
+
+.result-item h3 {
+  margin: 0 0 5px 0;
+  color: #007BFF;
+}
+
+.result-item p {
+  margin: 0;
+  color: #555;
+}
+
+@media (max-width: 600px) {
+  .search-bar {
+    flex-direction: column;
+  }
+}
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Simple Blog Search</h1>
+    <div class="search-bar">
+      <input type="text" id="searchInput" placeholder="Search articles..." oninput="filterResults()">
+      <select id="filterSelect" onchange="filterResults()">
+        <option value="all">All Categories</option>
+        <option value="tech">Tech</option>
+        <option value="lifestyle">Lifestyle</option>
+        <option value="education">Education</option>
+      </select>
+    </div>
+    <div id="resultsContainer" class="results-container"></div>
+  </div>
+  <script>const articles = [
+    { title: "Understanding JavaScript", category: "tech", content: "JavaScript is a versatile programming language." },
+    { title: "10 Tips for Healthy Living", category: "lifestyle", content: "Discover how to maintain a healthy lifestyle." },
+    { title: "The Future of AI", category: "tech", content: "AI is transforming industries worldwide." },
+    { title: "Learning New Skills", category: "education", content: "Learning is a lifelong process." },
+    { title: "Staying Productive at Work", category: "lifestyle", content: "Tips to boost your productivity at work." },
+  ];
+  
+  function displayResults(results) {
+    const container = document.getElementById("resultsContainer");
+    container.innerHTML = "";
+    if (results.length === 0) {
+      container.innerHTML = "<p>No results found</p>";
+      return;
+    }
+    results.forEach(article => {
+      const item = document.createElement("div");
+      item.classList.add("result-item");
+      item.innerHTML = `
+        <h3>${article.title}</h3>
+        <p>${article.content}</p>
+      `;
+      container.appendChild(item);
+    });
+  }
+  
+  function filterResults() {
+    const query = document.getElementById("searchInput").value.toLowerCase();
+    const filter = document.getElementById("filterSelect").value;
+    const filteredResults = articles.filter(article => {
+      const matchesQuery = article.title.toLowerCase().includes(query) || article.content.toLowerCase().includes(query);
+      const matchesCategory = filter === "all" || article.category === filter;
+      return matchesQuery && matchesCategory;
+    });
+    displayResults(filteredResults);
+  }
+  
+  // Initial display
+  displayResults(articles);
+  </script>
+</body>
+</html>
